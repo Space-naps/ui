@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import _ from 'lodash'
 
 const GITHUB_REPO = 'https://github.com/reactjs/redux'
 
@@ -26,11 +27,7 @@ export default class Explore extends Component {
     this.refs.input.value = val
   }
 
-  handleKeyUp(e) {
-    if (e.keyCode === 13) {
-      this.handleGoClick()
-    }
-  }
+  handleKeyUp = _.debounce(this.handleGoClick, 300);
 
   handleGoClick() {
     this.props.onChange(this.getInputValue())
@@ -39,7 +36,7 @@ export default class Explore extends Component {
   render() {
     return (
       <div>
-        <p>Type a username or repo full name and hit 'Go':</p>
+        <p>Enter a flight number</p>
         <input size="45"
                ref="input"
                defaultValue={this.props.value}
@@ -47,12 +44,11 @@ export default class Explore extends Component {
         <button onClick={this.handleGoClick}>
           Go!
         </button>
-        <p>
-          Code on <a href={GITHUB_REPO} target="_blank">Github</a>.
-        </p>
+
         <p>
           Move the DevTools with Ctrl+W or hide them with Ctrl+H.
         </p>
+        <p>Add something new here</p>
       </div>
     )
   }
