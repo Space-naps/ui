@@ -56,8 +56,8 @@ class App extends Component {
     
     return (
       <div className={styles.app} style={bgStyle}>
-        <Logo />
         <div className={styles.splash}>
+          <Logo />
           <Explore style={{ color: '#000'}} value={inputValue}
                   onChange={this.handleChange} />
         </div>  

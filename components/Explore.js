@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import _ from 'lodash'
 import DateTime from 'react-datetime'
-
 import 'react-datetime/css/react-datetime.css'
 import styles from './Explore.scss'
 
@@ -40,7 +39,8 @@ export default class Explore extends Component {
         <input className={styles['form-control']} size="45" placeholder='Flight no.'
                defaultValue={this.props.value.flight}
                onKeyUp={this.handleKeyUp} />
-        <DateTime className={styles['form-control']} onChange={this.handleDateChange} 
+        <DateTime className={styles['form-control']} 
+          onChange={this.handleDateChange} 
           timeFormat={false} defaultValue={this.props.value.date} />
       </div>
     )
