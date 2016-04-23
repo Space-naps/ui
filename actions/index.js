@@ -1,6 +1,7 @@
 import { CALL_API, Schemas } from '../middleware/api'
 import moment from 'moment'
 import airport_coordinates from './airport_coordinates.json'
+import airport_codes from './airport_codes.json'
 
 export const USER_REQUEST = 'USER_REQUEST'
 export const USER_SUCCESS = 'USER_SUCCESS'
@@ -69,7 +70,7 @@ export function loadWeather(airport_code, time) {
 export function loadUser(flight, requiredFields = []) {
   return (dispatch, getState) => {
     const flight_details = getState().entities.flights[flight]
-    if (flight_details && requiredFields.every(key => flight_details.hasOwnProperty(key))) {
+    if (flight_details) {
       return null
     }
 
@@ -87,96 +88,73 @@ export const MACHINE_REQUEST = 'MACHINE_REQUEST'
 export const MACHINE_SUCCESS = 'MACHINE_SUCCESS'
 export const MACHINE_FAILURE = 'MACHINE_FAILURE'
 
-export function fetchMachine() {
+export function fetchMachine(time, flight_stats, weather) {
+
+  time = moment(time);
+
+  let depart_port = flight_stats.departureAirportFsCode;
+  let arr_port = flight_stats.arrivalAirportFsCode;
+
+  let depart_code = '0'
+  let arrive_code = '0'
+  if (depart_port in airport_codes) {
+    depart_code = airport_codes[depart_port]
+  }
+  if (arr_port in airport_codes) {
+    arrive_code = airport_codes[arr_port]
+  }
+  let data = {
+        "DayofMonth": time.date(),
+        "DayOfWeek": time.day(),
+        "Carrier": flight_stats.carrierFsCode,
+        "OriginAirportID": depart_code,
+        "DestAirportID": arrive_code,
+        "CRSDepTime": '0',
+        "CRSArrTime": '0',
+        "ArrDel15": '0',
+    // Departure?
+        "Timezone": '0',
+        "Visibility": weather.currently.visibility,
+        "DryBulbFarenheit": '0',
+        "DewPointFarenheit": weather.currently.dewPoint,
+        "RelativeHumidity": '0',
+        "WindSpeed": weather.currently.windSpeed,
+        "Altimeter": '0',
+    // Destination??
+        "Timezone (2)": '0',
+        "Visibility (2)": '0',
+        "DryBulbFarenheit (2)": '0',
+        "DewPointFarenheit (2)": '0',
+        "RelativeHumidity (2)": '0',
+        "WindSpeed (2)": '0',
+        "Altimeter (2)": '0'
+  }
+
+  let body = {
+  "Inputs": {
+    "input1": {
+      "ColumnNames": [
+      ],
+      "Values": [
+        [        ]
+      ]
+    }
+  },
+  "GlobalParameters": {}
+}
+  for (let key of Object.keys(data)) {
+    body.Inputs.input1.ColumnNames.push(key)
+    body.Inputs.input1.Values[0].push(`${data[key]}`)
+  }
 
   return {
     [CALL_API]: {
       types: [ MACHINE_REQUEST, MACHINE_SUCCESS, MACHINE_FAILURE ],
       endpoint: `${CORS_ANYWHERE}https://asiasoutheast.services.azureml.net/workspaces/fd13a298d4c34a60917e0bdb8ddc63cd/services/298b8d5eb9e9445c8cec08a549eb608d/execute?api-version=2.0&details=true`,
       // endpoint: 'https://flyto.azure-api.net/flightdelay',
-      schema: Schemas.FLIGHT,
+      schema: Schemas.MACHINE,
       method: 'POST',
-      body: {
-  "Inputs": {
-    "input1": {
-      "ColumnNames": [
-        "DayofMonth",
-        "DayOfWeek",
-        "Carrier",
-        "OriginAirportID",
-        "DestAirportID",
-        "CRSDepTime",
-        "CRSArrTime",
-        "ArrDel15",
-        "Timezone",
-        "Visibility",
-        "DryBulbFarenheit",
-        "DewPointFarenheit",
-        "RelativeHumidity",
-        "WindSpeed",
-        "Altimeter",
-        "Timezone (2)",
-        "Visibility (2)",
-        "DryBulbFarenheit (2)",
-        "DewPointFarenheit (2)",
-        "RelativeHumidity (2)",
-        "WindSpeed (2)",
-        "Altimeter (2)"
-      ],
-      "Values": [
-        [
-          "0",
-          "0",
-          "9E",
-          "10140",
-          "10140",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0"
-        ],
-        [
-          "0",
-          "0",
-          "9E",
-          "10140",
-          "10140",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0",
-          "0"
-        ]
-      ]
-    }
-  },
-  "GlobalParameters": {}
-},
+      body: body,
       headers: {Authorization: 'Bearer /R5R26y2Jv7Y8nc4TeqlDKVm6MhvnvVMz2HCN8e8dusW+uLDDZmvyTPlKGOsX4m8joMhFvXf6QAm3hI3DethMA==',
       'Content-Type': 'application/json',
       'Accept': 'application/json'}

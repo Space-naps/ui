@@ -2,11 +2,18 @@ import { Schema, arrayOf, unionOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
 import 'isomorphic-fetch'
 import airport_coordinates from '../actions/airport_coordinates.json'
+import airport_codes from '../actions/airport_codes.json'
 
 let coords_to_airport = {}
 for(let airport of Object.keys(airport_coordinates)) {
   let details = airport_coordinates[airport]
   coords_to_airport[`${details.lat},${details.long}`] = airport
+}
+
+let codes_to_airport = {}
+for (let airport of Object.keys(airport_codes)) {
+  let code = airport_codes[airport]
+  codes_to_airport[code] = airport
 }
 
 // Extracts the next page URL from Github API response.
@@ -78,12 +85,19 @@ function generateWeatherCode(entity) {
 }
 const weather = new Schema('weathers', {idAttribute: generateWeatherCode})
 
+function generateMachineId(entity) {
+  console.log("Generating machine ids")
+  return `${codes_to_airport[entity.results.output1.value.values[0][3]]}-${entity.results.output1.value.values[0][2]}`
+}
+
+const machine = new Schema('machines', {idAttribute: generateMachineId})
 
 
 // Schemas for Github API responses.
 export const Schemas = {
   FLIGHT: flightDetails,
-  WEATHER: weather
+  WEATHER: weather,
+  MACHINE: machine
 }
 
 

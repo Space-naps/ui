@@ -9,7 +9,9 @@ export default class User extends Component {
       <div className="User">
         {departureAirportFsCode} to        {arrivalAirportFsCode}<br/>
         {this.props.user && this.props.user.operationalTimes.publishedDeparture.dateLocal}<br/>
-        {this.props.weather && `${this.props.weather.currently.summary} ${this.props.weather.currently.temperature} degrees`}
+        {this.props.weather && `${this.props.weather.currently.summary} ${this.props.weather.currently.temperature} degrees`}<br/>
+        {this.props.prediction && `${this.props.prediction.likely} - ${this.props.prediction.probability}`}
+        {!this.props.prediction && "Loading prediction..."}
       </div>
     )
   }
