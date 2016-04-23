@@ -11,7 +11,8 @@ var compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }))
 app.use(webpackHotMiddleware(compiler))
 
-app.use('/img', express.static('img'))
+app.use('/img', express.static('img'));
+app.use('/fonts', express.static('fonts'));
 
 app.use(function(req, res) {
   res.sendFile(__dirname + '/index.html')
