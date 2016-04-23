@@ -5,6 +5,12 @@ export const USER_REQUEST = 'USER_REQUEST'
 export const USER_SUCCESS = 'USER_SUCCESS'
 export const USER_FAILURE = 'USER_FAILURE'
 
+
+const API_ROOT = 'https://flightstats-api.herokuapp.com/flex/flightstatus/rest/v2/json/'
+const AUTH_STRING = '?appId=0f80d303&appKey=64a8a2b28e2b5efee4a869e447060268&utc=false'
+
+
+
 // Fetches a single user from Github API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
 function fetchUser(carrier, flight, year, month, day) {
@@ -17,7 +23,7 @@ function fetchUser(carrier, flight, year, month, day) {
   return {
     [CALL_API]: {
       types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
-      endpoint: `flight/status/${carrier}/${flight}/dep/${year}/${month}/${day}`,
+      endpoint: `${API_ROOT}flight/status/${carrier}/${flight}/dep/${year}/${month}/${day}${AUTH_STRING}`,
       schema: Schemas.FLIGHT,
     }
   }
@@ -41,9 +47,23 @@ export function loadUser(flight, requiredFields = []) {
   }
 }
 
-export const REPO_REQUEST = 'REPO_REQUEST'
-export const REPO_SUCCESS = 'REPO_SUCCESS'
-export const REPO_FAILURE = 'REPO_FAILURE'
+
+export const MACHINE_REQUEST = 'MACHINE_REQUEST'
+export const MACHINE_SUCCESS = 'MACHINE_SUCCESS'
+export const MACHINE_FAILURE = 'MACHINE_FAILURE'
+
+export function fetchMachine() {
+  return {
+    [CALL_API]: {
+      types: [ MACHINE_REQUEST, MACHINE_SUCCESS, MACHINE_FAILURE ],
+      endpoint: `https://asiasoutheast.services.azureml.net/workspaces/fd13a298d4c34a60917e0bdb8ddc63cd/services/298b8d5eb9e9445c8cec08a549eb608d/execute?api-version=2.0&details=true`,
+      schema: Schemas.FLIGHT,
+      method: 'POST',
+      body: {test: 'blah'}
+    }
+  }
+}
+
 
 
 

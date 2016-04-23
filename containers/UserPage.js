@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { loadUser } from '../actions'
+import { loadUser, fetchMachine } from '../actions'
 import User from '../components/User'
 import Repo from '../components/Repo'
 import List from '../components/List'
@@ -9,6 +9,7 @@ import zip from 'lodash/zip'
 function loadData(props) {
   const { flight } = props
   props.loadUser(flight, [ 'name' ])
+  props.fetchMachine()
 }
 
 class UserPage extends Component {
@@ -72,4 +73,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(mapStateToProps, {
   loadUser,
+  fetchMachine
 })(UserPage)

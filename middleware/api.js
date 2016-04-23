@@ -18,15 +18,11 @@ function getNextPageUrl(response) {
 }
 
 
-const API_ROOT = 'https://flightstats-api.herokuapp.com/flex/flightstatus/rest/v2/json/'
-const AUTH_STRING = '?appId=0f80d303&appKey=64a8a2b28e2b5efee4a869e447060268&utc=false'
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-function callApi(endpoint, schema) {
-  const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint + AUTH_STRING : endpoint
-
-  return fetch(fullUrl)
+function callApi(fullUrl, schema, method='GET', body=null) {
+  return fetch(fullUrl, {method, body})
     .then(response =>
       response.json().then(json => ({ json, response }))
     ).then(({ json, response }) => {
@@ -81,7 +77,7 @@ export default store => next => action => {
     return next(action)
   }
 
-  let { endpoint } = callAPI
+  let { endpoint, method, body } = callAPI
   const { schema, types } = callAPI
 
   if (typeof endpoint === 'function') {
@@ -110,7 +106,7 @@ export default store => next => action => {
   const [ requestType, successType, failureType ] = types
   next(actionWith({ type: requestType }))
 
-  return callApi(endpoint, schema).then(
+  return callApi(endpoint, schema, method, body).then(
     response => next(actionWith({
       response,
       type: successType
