@@ -15,7 +15,6 @@ class RepoPage extends Component {
   constructor(props) {
     super(props)
     this.renderUser = this.renderUser.bind(this)
-    this.handleLoadMoreClick = this.handleLoadMoreClick.bind(this)
   }
 
   componentWillMount() {

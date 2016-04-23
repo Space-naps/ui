@@ -1,4 +1,4 @@
-import { Schema, arrayOf, normalize } from 'normalizr'
+import { Schema, arrayOf, unionOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
 import 'isomorphic-fetch'
 
@@ -17,12 +17,14 @@ function getNextPageUrl(response) {
   return nextLink.split(';')[0].slice(1, -1)
 }
 
-const API_ROOT = 'https://api.github.com/'
+
+const API_ROOT = 'https://flightstats-api.herokuapp.com/flex/flightstatus/rest/v2/json/'
+const AUTH_STRING = '?appId=0f80d303&appKey=64a8a2b28e2b5efee4a869e447060268&utc=false'
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
 function callApi(endpoint, schema) {
-  const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint
+  const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint + AUTH_STRING : endpoint
 
   return fetch(fullUrl)
     .then(response =>
@@ -50,24 +52,22 @@ function callApi(endpoint, schema) {
 
 // Read more about Normalizr: https://github.com/gaearon/normalizr
 
-const userSchema = new Schema('users', {
-  idAttribute: 'login'
-})
 
-const repoSchema = new Schema('repos', {
-  idAttribute: 'fullName'
-})
+function generateFlightCode(entity) {
+  return entity['carrierFsCode'] + entity['flightNumber']
+}
+const flightCode = new Schema('flights', {idAttribute: generateFlightCode})
+const airportSchema = new Schema('airports', {idAttribute: 'iata'})
+const flightDetails = new Schema('flightDetails');
+flightDetails.define({
+  appendix: {airports: arrayOf(airportSchema)},
+  flightStatuses: arrayOf(flightCode)
+});
 
-repoSchema.define({
-  owner: userSchema
-})
 
 // Schemas for Github API responses.
 export const Schemas = {
-  USER: userSchema,
-  USER_ARRAY: arrayOf(userSchema),
-  REPO: repoSchema,
-  REPO_ARRAY: arrayOf(repoSchema)
+  FLIGHT: flightDetails,
 }
 
 // Action key that carries API call info interpreted by this Redux middleware.

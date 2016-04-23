@@ -3,16 +3,13 @@ import { Link } from 'react-router'
 
 export default class User extends Component {
   render() {
-    const { login, avatarUrl, name } = this.props.user
+    const { departureAirportFsCode, arrivalAirportFsCode, name } = this.props.user
 
     return (
       <div className="User">
-        <Link to={`/${login}`}>
-          <img src={avatarUrl} width="72" height="72" />
-          <h3>
-            {login} {name && <span>({name})</span>}
-          </h3>
-        </Link>
+        {departureAirportFsCode}<br/>
+        {arrivalAirportFsCode}<br/>
+        {this.props.user.operationalTimes.publishedDeparture.dateLocal}<br/>
       </div>
     )
   }
@@ -20,7 +17,7 @@ export default class User extends Component {
 
 User.propTypes = {
   user: PropTypes.shape({
-    login: PropTypes.string.isRequired,
+    login: PropTypes.string,
     avatarUrl: PropTypes.string.isRequired,
     name: PropTypes.string
   }).isRequired
