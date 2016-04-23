@@ -23,6 +23,23 @@ function fetchUser(carrier, flight, year, month, day) {
   }
 }
 
+var airport_coordinates = require('../airport_coordinates.json');
+// Fetches a weather forecast for a day using the forecast.io API.
+// Relies on the custom API middleware defined in ../middleware/api.js.
+export function fetchWeather(airport_code, unix_time) {
+  var latitude = airport_coordinates[airport_code]["lat"];
+  var longitude = airport_coordinates[airport_code]["long"];
+  var API_KEY = "8aaa1191e7da730e86d8a96f5032d132"
+  console.log(latitude, longitude, API_KEY);
+  return {
+    [CALL_API]: {
+      types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
+      endpoint: `https://api.forecast.io/forecast/${API_KEY}/${latitude},${longitude},${unix_time}`,
+      schema: Schemas.FLIGHT,
+    }
+  }
+}
+
 // Fetches a single user from Github API unless it is cached.
 // Relies on Redux Thunk middleware.
 export function loadUser(flight, requiredFields = []) {
