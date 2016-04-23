@@ -1,5 +1,6 @@
 import { CALL_API, Schemas } from '../middleware/api'
 import moment from 'moment'
+import airport_coordinates from './airport_coordinates.json'
 
 export const USER_REQUEST = 'USER_REQUEST'
 export const USER_SUCCESS = 'USER_SUCCESS'
@@ -23,7 +24,7 @@ function fetchUser(carrier, flight, year, month, day) {
   }
 }
 
-var airport_coordinates = require('../airport_coordinates.json');
+
 // Fetches a weather forecast for a day using the forecast.io API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
 export function fetchWeather(airport_code, unix_time) {
