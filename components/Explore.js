@@ -11,45 +11,36 @@ export default class Explore extends Component {
   constructor(props) {
     super(props)
     this.handleKeyUp = this.handleKeyUp.bind(this)
-    this.handleGoClick = this.handleGoClick.bind(this)
+    this.handleDateChange = this.handleDateChange.bind(this)
+    this.state = {flight: '', date: null}
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
-      this.setInputValue(nextProps.value)
+      this.state = {...this.state, ...this.props.value}
     }
   }
 
-  getInputValue() {
-    return this.refs.input.value
+  handleKeyUp(e) {
+    this.state = {...this.state, flight: e.target.value}
+    this.handleChange(this.state)
   }
 
-  setInputValue(val) {
-    // Generally mutating DOM is a bad idea in React components,
-    // but doing this for a single uncontrolled field is less fuss
-    // than making it controlled and maintaining a state for it.
-    this.refs.input.value = val
+  handleDateChange(e) {
+    this.state = {...this.state, date: e.valueOf()};
+    this.handleChange(this.state)
   }
 
-  handleKeyUp = _.debounce(this.handleGoClick, 300);
-
-  handleGoClick() {
-    this.props.onChange(this.getInputValue())
-  }
+  handleChange = _.debounce(this.props.onChange, 300)
 
   render() {
     return (
       <div>
         <p>Enter a flight number</p>
         <input size="45"
-               ref="input"
-               defaultValue={this.props.value}
+               defaultValue={this.props.value.flight}
                onKeyUp={this.handleKeyUp} />
-        <DateTime/>
-        <button onClick={this.handleGoClick}>
-
-          Go!
-        </button>
+        <DateTime onChange={this.handleDateChange} timeFormat={false} defaultValue={this.props.value.date} />
 
         <p>
           Move the DevTools with Ctrl+W or hide them with Ctrl+H.
@@ -61,6 +52,6 @@ export default class Explore extends Component {
 }
 
 Explore.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired
 }

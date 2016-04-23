@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import Explore from '../components/Explore'
 import { resetErrorMessage } from '../actions'
+import moment from 'moment'
 
 class App extends Component {
   constructor(props) {
@@ -17,7 +18,14 @@ class App extends Component {
   }
 
   handleChange(nextValue) {
-    browserHistory.push(`/${nextValue}`)
+    let {flight, date} = nextValue;
+    if (flight) {
+      if (date) {
+        browserHistory.push(`/${flight}/${date}`)
+      } else {
+        browserHistory.push(`/${flight}`)
+      }
+    }
   }
 
   renderErrorMessage() {
@@ -56,15 +64,22 @@ App.propTypes = {
   // Injected by React Redux
   errorMessage: PropTypes.string,
   resetErrorMessage: PropTypes.func.isRequired,
-  inputValue: PropTypes.string.isRequired,
+  inputValue: PropTypes.shape({
+    flight: PropTypes.string.isRequired,
+    date: PropTypes.object.isRequired
+  }).isRequired,
   // Injected by React Router
   children: PropTypes.node
 }
 
 function mapStateToProps(state, ownProps) {
+  let [dummy, flight, date] = ownProps.location.pathname.split('/')
+  if (date) {
+    date = moment(date, 'x');
+  }
   return {
     errorMessage: state.errorMessage,
-    inputValue: ownProps.location.pathname.substring(1)
+    inputValue: {flight, date}
   }
 }
 
