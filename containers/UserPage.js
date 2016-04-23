@@ -1,16 +1,23 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { loadUser, fetchMachine, fetchWeather } from '../actions'
+import { loadUser, fetchMachine, loadWeather } from '../actions'
 import User from '../components/User'
 import Repo from '../components/Repo'
 import List from '../components/List'
 import zip from 'lodash/zip'
 
 function loadData(props) {
-  const { flight } = props
+  const { flight, flight_details, weather } = props
   props.loadUser(flight, [ 'name' ])
-  props.fetchMachine()
-  props.fetchWeather("JLN", "1461408389")
+  if (flight_details) {
+    props.loadWeather(flight_details.departureAirportFsCode, flight_details.operationalTimes.publishedDeparture.dateLocal)
+    if (weather) {
+      props.fetchMachine()
+    }
+  }
+
+
+
 }
 
 class UserPage extends Component {
@@ -24,7 +31,9 @@ class UserPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.flight !== this.props.flight) {
+    if (nextProps.flight !== this.props.flight || 
+      (nextProps.flight_details && !this.props.flight_details) ||
+      (nextProps.weather && !this.props.weather)) {
       loadData(nextProps)
     }
   }
@@ -56,25 +65,30 @@ UserPage.propTypes = {
   flight: PropTypes.string.isRequired,
   flight_details: PropTypes.object,
   loadUser: PropTypes.func.isRequired,
-  fetchWeather: PropTypes.func.isRequired,
+  loadWeather: PropTypes.func.isRequired,
 }
 
 function mapStateToProps(state, ownProps) {
   let { login } = ownProps.params
   const {
-    entities: { flights }
+    entities: { flights, weathers }
   } = state
 
   // Haccckkkkk
   let flight = login.toUpperCase()
+  let weather = null
+  if (flights[flight]) {
+    weather = flights[flight].departureAirportFsCode
+  }
   return {
     flight,
-    flight_details: flights[flight]
+    flight_details: flights[flight],
+    weather: weathers[weather]
   }
 }
 
 export default connect(mapStateToProps, {
   loadUser,
   fetchMachine,
-  fetchWeather
+  loadWeather
 })(UserPage)

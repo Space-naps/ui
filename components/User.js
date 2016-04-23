@@ -18,7 +18,6 @@ export default class User extends Component {
 User.propTypes = {
   user: PropTypes.shape({
     login: PropTypes.string,
-    avatarUrl: PropTypes.string.isRequired,
     name: PropTypes.string
   }).isRequired
 }

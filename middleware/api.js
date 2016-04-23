@@ -1,6 +1,13 @@
 import { Schema, arrayOf, unionOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
 import 'isomorphic-fetch'
+import airport_coordinates from '../actions/airport_coordinates.json'
+
+let coords_to_airport = {}
+for(let airport of Object.keys(airport_coordinates)) {
+  let details = airport_coordinates[airport]
+  coords_to_airport[`${details.lat},${details.long}`] = airport
+}
 
 // Extracts the next page URL from Github API response.
 function getNextPageUrl(response) {
@@ -65,11 +72,23 @@ flightDetails.define({
   flightStatuses: arrayOf(flightCode)
 });
 
+function generateWeatherCode(entity) {
+  let key = `${entity.latitude},${entity.longitude}`
+  return coords_to_airport[key]
+}
+const weather = new Schema('weathers', {idAttribute: generateWeatherCode})
+
+
 
 // Schemas for Github API responses.
 export const Schemas = {
   FLIGHT: flightDetails,
+  WEATHER: weather
 }
+
+
+
+
 
 // Action key that carries API call info interpreted by this Redux middleware.
 export const CALL_API = Symbol('Call API')

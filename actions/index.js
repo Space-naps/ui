@@ -32,19 +32,35 @@ function fetchUser(carrier, flight, year, month, day) {
 }
 
 
+export const WEATHER_REQUEST = 'WEATHER_REQUEST'
+export const WEATHER_SUCCESS = 'WEATHER_SUCCESS'
+export const WEATHER_FAILURE = 'WEATHER_FAILURE'
+
+
+
 // Fetches a weather forecast for a day using the forecast.io API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-export function fetchWeather(airport_code, unix_time) {
+function fetchWeather(airport_code, unix_time) {
   var latitude = airport_coordinates[airport_code]["lat"];
   var longitude = airport_coordinates[airport_code]["long"];
   var API_KEY = "8aaa1191e7da730e86d8a96f5032d132"
-  console.log(latitude, longitude, API_KEY);
   return {
     [CALL_API]: {
-      types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
+      types: [ WEATHER_REQUEST, WEATHER_SUCCESS, WEATHER_FAILURE ],
       endpoint: `${CORS_ANYWHERE}https://api.forecast.io/forecast/${API_KEY}/${latitude},${longitude},${unix_time}`,
-      schema: Schemas.FLIGHT,
+      schema: Schemas.WEATHER,
+      key: airport_code
     }
+  }
+}
+
+export function loadWeather(airport_code, time) {
+  let unix_time = moment(time).unix()
+  return (dispatch, getState) => {
+    const weather = getState().entities.weathers[airport_code]
+    if (weather) return null
+
+    return dispatch(fetchWeather(airport_code, unix_time))
   }
 }
 

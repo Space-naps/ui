@@ -4,7 +4,7 @@ import { routerReducer as routing } from 'react-router-redux'
 import { combineReducers } from 'redux'
 
 // Updates an entity cache in response to any action with response.entities.
-function entities(state = { flights: {}, repos: {} }, action) {
+function entities(state = { flights: {}, repos: {}, weathers: {} }, action) {
   if (action.response && action.response.entities) {
     return merge({}, state, action.response.entities)
   }
