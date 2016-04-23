@@ -1,5 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import _ from 'lodash'
+import DateTime from 'react-datetime'
+
+import styles from 'react-datetime/css/react-datetime.css'
 
 const GITHUB_REPO = 'https://github.com/reactjs/redux'
 
@@ -41,7 +44,9 @@ export default class Explore extends Component {
                ref="input"
                defaultValue={this.props.value}
                onKeyUp={this.handleKeyUp} />
+        <DateTime/>
         <button onClick={this.handleGoClick}>
+
           Go!
         </button>
 
