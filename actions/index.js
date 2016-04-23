@@ -109,15 +109,15 @@ export function fetchMachine(time, flight_stats, weather) {
         "Carrier": flight_stats.carrierFsCode,
         "OriginAirportID": depart_code,
         "DestAirportID": arrive_code,
-        "CRSDepTime": '0',
-        "CRSArrTime": '0',
+        "CRSDepTime": flight_stats.departureDate.dateLocal,
+        "CRSArrTime": flight_stats.arrivalDate.dateLocal,
         "ArrDel15": '0',
     // Departure?
         "Timezone": '0',
         "Visibility": weather.currently.visibility,
-        "DryBulbFarenheit": '0',
+        "DryBulbFarenheit": '0', // TODO temperature (normal)
         "DewPointFarenheit": weather.currently.dewPoint,
-        "RelativeHumidity": '0',
+        "RelativeHumidity": weather.currently.humidity,
         "WindSpeed": weather.currently.windSpeed,
         "Altimeter": '0',
     // Destination??

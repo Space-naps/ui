@@ -50,20 +50,18 @@ class App extends Component {
 
   render() {
     const { children, inputValue } = this.props;
-    var bgStyle = { 
-      backgroundImage: 'url(/img/splash-bg.png)'
-    };
-    
+
     return (
-      <div className={styles.app} style={bgStyle}>
+      <div className={styles.app}>
         <div className={styles.splash}>
           <Logo />
           <Explore style={{ color: '#000'}} value={inputValue}
                   onChange={this.handleChange} />
         </div>  
-        <hr />
-        {this.renderErrorMessage()}
-        {children}
+        <div>
+          {this.renderErrorMessage()}
+          {children}
+        </div>
       </div>
     )
   }

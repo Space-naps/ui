@@ -55,7 +55,6 @@ class UserPage extends Component {
     return (
       <div>
         <User user={flight_details} weather={weather} prediction={prediction} />
-        <hr />
       </div>
     )
   }
