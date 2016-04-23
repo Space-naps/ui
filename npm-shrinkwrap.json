@@ -3257,6 +3257,18 @@
         }
       }
     },
+    "webpack": {
+      "version": "1.13.0",
+      "from": "webpack@>=1.9.11 <2.0.0",
+      "resolved": "https://registry.npmjs.org/webpack/-/webpack-1.13.0.tgz",
+      "dependencies": {
+        "supports-color": {
+          "version": "3.1.2",
+          "from": "supports-color@>=3.1.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-3.1.2.tgz"
+        }
+      }
+    },
     "webpack-core": {
       "version": "0.6.8",
       "from": "webpack-core@>=0.6.0 <0.7.0",
