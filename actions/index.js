@@ -1,4 +1,5 @@
 import { CALL_API, Schemas } from '../middleware/api'
+import moment from 'moment'
 
 export const USER_REQUEST = 'USER_REQUEST'
 export const USER_SUCCESS = 'USER_SUCCESS'
@@ -6,11 +7,17 @@ export const USER_FAILURE = 'USER_FAILURE'
 
 // Fetches a single user from Github API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchUser(login) {
+function fetchUser(carrier, flight, year, month, day) {
+  if (!year) {
+    let now = moment()
+    year = now.year()
+    month = now.month() + 1
+    day = now.date()
+  }
   return {
     [CALL_API]: {
       types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
-      endpoint: `users/${login}`,
+      endpoint: `flight/status/${carrier}/${flight}/dep/${year}/${month}/${day}`,
       schema: Schemas.USER
     }
   }
@@ -18,14 +25,19 @@ function fetchUser(login) {
 
 // Fetches a single user from Github API unless it is cached.
 // Relies on Redux Thunk middleware.
-export function loadUser(login, requiredFields = []) {
+export function loadUser(flight, requiredFields = []) {
   return (dispatch, getState) => {
-    const user = getState().entities.users[login]
+    const user = getState().entities.users[flight]
     if (user && requiredFields.every(key => user.hasOwnProperty(key))) {
       return null
     }
 
-    return dispatch(fetchUser(login))
+    let regex = /([a-zA-Z]+)(\d+)/;
+    let result = flight.match(regex);
+    if(result) {
+      let [dummy, airline, flight_num] = result;
+      return dispatch(fetchUser(airline, flight_num))
+    }
   }
 }
 

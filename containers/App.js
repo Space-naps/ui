@@ -66,7 +66,7 @@ App.propTypes = {
   resetErrorMessage: PropTypes.func.isRequired,
   inputValue: PropTypes.shape({
     flight: PropTypes.string.isRequired,
-    date: PropTypes.object.isRequired
+    date: PropTypes.object
   }).isRequired,
   // Injected by React Router
   children: PropTypes.node
