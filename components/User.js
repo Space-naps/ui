@@ -7,9 +7,9 @@ export default class User extends Component {
 
     return (
       <div className="User">
-        {departureAirportFsCode}<br/>
-        {arrivalAirportFsCode}<br/>
-        {this.props.user.operationalTimes.publishedDeparture.dateLocal}<br/>
+        {departureAirportFsCode} to        {arrivalAirportFsCode}<br/>
+        {this.props.user && this.props.user.operationalTimes.publishedDeparture.dateLocal}<br/>
+        {this.props.weather && `${this.props.weather.currently.summary} ${this.props.weather.currently.temperature} degrees`}
       </div>
     )
   }

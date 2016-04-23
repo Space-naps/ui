@@ -47,14 +47,14 @@ class UserPage extends Component {
   }
 
   render() {
-    const { flight_details, flight } = this.props
+    const { flight_details, flight, weather } = this.props
     if (!flight_details) {
       return <h1><i>Loading {flight}’s details...</i></h1>
     }
 
     return (
       <div>
-        <User user={flight_details} />
+        <User user={flight_details} weather={weather}  />
         <hr />
       </div>
     )
