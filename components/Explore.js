@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import _ from 'lodash'
 import DateTime from 'react-datetime'
 
-import styles from 'react-datetime/css/react-datetime.css'
+import 'react-datetime/css/react-datetime.css'
+import styles from './Explore.scss'
 
 const GITHUB_REPO = 'https://github.com/reactjs/redux'
 
@@ -53,7 +54,7 @@ export default class Explore extends Component {
         <p>
           Move the DevTools with Ctrl+W or hide them with Ctrl+H.
         </p>
-        <p>Add something new here</p>
+        <p className={styles.test}>Add something new here</p>
       </div>
     )
   }
