@@ -36,16 +36,12 @@ export default class Explore extends Component {
   render() {
     return (
       <div>
-        <p>Enter a flight number</p>
-        <input size="45"
+        <p>Enter flight details</p>
+        <input className={styles['form-control']} size="45" placeholder='Flight no.'
                defaultValue={this.props.value.flight}
                onKeyUp={this.handleKeyUp} />
-        <DateTime className={styles.input} onChange={this.handleDateChange} 
+        <DateTime className={styles['form-control']} onChange={this.handleDateChange} 
           timeFormat={false} defaultValue={this.props.value.date} />
-        <p>
-          Move the DevTools with Ctrl+W or hide them with Ctrl+H.
-        </p>
-        <p className={styles.test}>Add something new here</p>
       </div>
     )
   }

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
+import Logo from '../components/Logo';
 import Explore from '../components/Explore'
 import { resetErrorMessage } from '../actions'
 import moment from 'moment'
@@ -55,6 +56,7 @@ class App extends Component {
     
     return (
       <div className={styles.app} style={bgStyle}>
+        <Logo />
         <div className={styles.splash}>
           <Explore style={{ color: '#000'}} value={inputValue}
                   onChange={this.handleChange} />

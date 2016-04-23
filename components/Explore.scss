@@ -3,6 +3,11 @@
   background-color: #00ff00;
 }
 
-.input {
+.form-control {
   color: #000;
+}
+
+input.form-control {
+  padding: 5px 10px;
+  border-radius: 5px;
 }
