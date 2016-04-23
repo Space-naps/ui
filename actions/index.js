@@ -10,6 +10,7 @@ export const USER_FAILURE = 'USER_FAILURE'
 const API_ROOT = 'https://flightstats-api.herokuapp.com/flex/flightstatus/rest/v2/json/'
 const AUTH_STRING = '?appId=0f80d303&appKey=64a8a2b28e2b5efee4a869e447060268&utc=false'
 
+const CORS_ANYWHERE = 'https://cors-anywhere.herokuapp.com/'
 
 
 // Fetches a single user from Github API.
@@ -41,7 +42,7 @@ export function fetchWeather(airport_code, unix_time) {
   return {
     [CALL_API]: {
       types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
-      endpoint: `https://api.forecast.io/forecast/${API_KEY}/${latitude},${longitude},${unix_time}`,
+      endpoint: `${CORS_ANYWHERE}https://api.forecast.io/forecast/${API_KEY}/${latitude},${longitude},${unix_time}`,
       schema: Schemas.FLIGHT,
     }
   }
@@ -71,13 +72,98 @@ export const MACHINE_SUCCESS = 'MACHINE_SUCCESS'
 export const MACHINE_FAILURE = 'MACHINE_FAILURE'
 
 export function fetchMachine() {
+
   return {
     [CALL_API]: {
       types: [ MACHINE_REQUEST, MACHINE_SUCCESS, MACHINE_FAILURE ],
-      endpoint: `https://asiasoutheast.services.azureml.net/workspaces/fd13a298d4c34a60917e0bdb8ddc63cd/services/298b8d5eb9e9445c8cec08a549eb608d/execute?api-version=2.0&details=true`,
+      endpoint: `${CORS_ANYWHERE}https://asiasoutheast.services.azureml.net/workspaces/fd13a298d4c34a60917e0bdb8ddc63cd/services/298b8d5eb9e9445c8cec08a549eb608d/execute?api-version=2.0&details=true`,
+      // endpoint: 'https://flyto.azure-api.net/flightdelay',
       schema: Schemas.FLIGHT,
       method: 'POST',
-      body: {test: 'blah'}
+      body: {
+  "Inputs": {
+    "input1": {
+      "ColumnNames": [
+        "DayofMonth",
+        "DayOfWeek",
+        "Carrier",
+        "OriginAirportID",
+        "DestAirportID",
+        "CRSDepTime",
+        "CRSArrTime",
+        "ArrDel15",
+        "Timezone",
+        "Visibility",
+        "DryBulbFarenheit",
+        "DewPointFarenheit",
+        "RelativeHumidity",
+        "WindSpeed",
+        "Altimeter",
+        "Timezone (2)",
+        "Visibility (2)",
+        "DryBulbFarenheit (2)",
+        "DewPointFarenheit (2)",
+        "RelativeHumidity (2)",
+        "WindSpeed (2)",
+        "Altimeter (2)"
+      ],
+      "Values": [
+        [
+          "0",
+          "0",
+          "9E",
+          "10140",
+          "10140",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "9E",
+          "10140",
+          "10140",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ]
+    }
+  },
+  "GlobalParameters": {}
+},
+      headers: {Authorization: 'Bearer /R5R26y2Jv7Y8nc4TeqlDKVm6MhvnvVMz2HCN8e8dusW+uLDDZmvyTPlKGOsX4m8joMhFvXf6QAm3hI3DethMA==',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'}
     }
   }
 }

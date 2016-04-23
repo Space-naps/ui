@@ -75,6 +75,6 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(mapStateToProps, {
   loadUser,
-  fetchMachine
-  fetchWeather,
+  fetchMachine,
+  fetchWeather
 })(UserPage)

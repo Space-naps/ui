@@ -21,8 +21,13 @@ function getNextPageUrl(response) {
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-function callApi(fullUrl, schema, method='GET', body=null) {
-  return fetch(fullUrl, {method, body})
+function callApi(fullUrl, schema, method='GET', body=null, headers={}) {
+  console.log(method, body, headers);
+  let options = {method, headers}
+  if (body) {
+    options.body = JSON.stringify(body)
+  }
+  return fetch(fullUrl, options)
     .then(response =>
       response.json().then(json => ({ json, response }))
     ).then(({ json, response }) => {
@@ -77,7 +82,7 @@ export default store => next => action => {
     return next(action)
   }
 
-  let { endpoint, method, body } = callAPI
+  let { endpoint, method, body, headers } = callAPI
   const { schema, types } = callAPI
 
   if (typeof endpoint === 'function') {
@@ -106,7 +111,7 @@ export default store => next => action => {
   const [ requestType, successType, failureType ] = types
   next(actionWith({ type: requestType }))
 
-  return callApi(endpoint, schema, method, body).then(
+  return callApi(endpoint, schema, method, body, headers).then(
     response => next(actionWith({
       response,
       type: successType
