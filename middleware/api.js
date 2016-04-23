@@ -1,4 +1,4 @@
-import { Schema, arrayOf, normalize } from 'normalizr'
+import { Schema, arrayOf, unionOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
 import 'isomorphic-fetch'
 
@@ -52,24 +52,22 @@ function callApi(endpoint, schema) {
 
 // Read more about Normalizr: https://github.com/gaearon/normalizr
 
-const userSchema = new Schema('users', {
-  idAttribute: 'login'
-})
 
-const repoSchema = new Schema('repos', {
-  idAttribute: 'fullName'
-})
+function generateFlightCode(entity) {
+  return entity['carrierFsCode'] + entity['flightNumber']
+}
+const flightCode = new Schema('flights', {idAttribute: generateFlightCode})
+const airportSchema = new Schema('airports', {idAttribute: 'iata'})
+const flightDetails = new Schema('flightDetails');
+flightDetails.define({
+  appendix: {airports: arrayOf(airportSchema)},
+  flightStatuses: arrayOf(flightCode)
+});
 
-repoSchema.define({
-  owner: userSchema
-})
 
 // Schemas for Github API responses.
 export const Schemas = {
-  USER: userSchema,
-  USER_ARRAY: arrayOf(userSchema),
-  REPO: repoSchema,
-  REPO_ARRAY: arrayOf(repoSchema)
+  FLIGHT: flightDetails,
 }
 
 // Action key that carries API call info interpreted by this Redux middleware.
