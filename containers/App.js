@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router'
 import Explore from '../components/Explore'
 import { resetErrorMessage } from '../actions'
 import moment from 'moment'
+import styles from './App.scss';
 
 class App extends Component {
   constructor(props) {
@@ -47,11 +48,17 @@ class App extends Component {
   }
 
   render() {
-    const { children, inputValue } = this.props
+    const { children, inputValue } = this.props;
+    var bgStyle = { 
+      backgroundImage: 'url(/img/splash-bg.png)'
+    };
+    
     return (
-      <div>
-        <Explore value={inputValue}
-                 onChange={this.handleChange} />
+      <div className={styles.app} style={bgStyle}>
+        <div className={styles.splash}>
+          <Explore style={{ color: '#000'}} value={inputValue}
+                  onChange={this.handleChange} />
+        </div>  
         <hr />
         {this.renderErrorMessage()}
         {children}

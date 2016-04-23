@@ -40,8 +40,8 @@ export default class Explore extends Component {
         <input size="45"
                defaultValue={this.props.value.flight}
                onKeyUp={this.handleKeyUp} />
-        <DateTime onChange={this.handleDateChange} timeFormat={false} defaultValue={this.props.value.date} />
-
+        <DateTime className={styles.input} onChange={this.handleDateChange} 
+          timeFormat={false} defaultValue={this.props.value.date} />
         <p>
           Move the DevTools with Ctrl+W or hide them with Ctrl+H.
         </p>

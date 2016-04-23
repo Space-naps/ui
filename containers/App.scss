@@ -1,0 +1,29 @@
+.app {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #003;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: #FFF;
+  
+}
+
+.splash {
+  margin: 0px;
+  padding: 10px 20px;
+}
+
+a {
+  color: #FD0;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+input {
+  background-color: #FFF;
+  color: #000;
+}
