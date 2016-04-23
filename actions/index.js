@@ -23,6 +23,25 @@ function fetchUser(carrier, flight, year, month, day) {
   }
 }
 
+function* entries(obj) {
+   for (let key of Object.keys(obj)) {
+    yield [key, obj[key]];
+   }
+}
+
+
+export function fetchMachinLearning(data) {
+  var machineLearning = ''
+  for (let [key, value] of entries(myObj)) {
+    machineLearing = machineLearing + '&${key}=${value}'
+}
+  return {
+    types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
+    endpoint: 'https://asiasoutheast.services.azureml.net/workspaces/fd13a298d4c34a60917e0bdb8ddc63cd/services/298b8d5eb9e9445c8cec08a549eb608d/execute?api-version=2.0&details=true'
+    // schema: Schemas.MACHINE,
+  }
+}
+
 // Fetches a single user from Github API unless it is cached.
 // Relies on Redux Thunk middleware.
 export function loadUser(flight, requiredFields = []) {
