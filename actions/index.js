@@ -1,5 +1,6 @@
 import { CALL_API, Schemas } from '../middleware/api'
 import moment from 'moment'
+import airport_coordinates from './airport_coordinates.json'
 
 export const USER_REQUEST = 'USER_REQUEST'
 export const USER_SUCCESS = 'USER_SUCCESS'
@@ -24,6 +25,23 @@ function fetchUser(carrier, flight, year, month, day) {
     [CALL_API]: {
       types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
       endpoint: `${API_ROOT}flight/status/${carrier}/${flight}/dep/${year}/${month}/${day}${AUTH_STRING}`,
+      schema: Schemas.FLIGHT,
+    }
+  }
+}
+
+
+// Fetches a weather forecast for a day using the forecast.io API.
+// Relies on the custom API middleware defined in ../middleware/api.js.
+export function fetchWeather(airport_code, unix_time) {
+  var latitude = airport_coordinates[airport_code]["lat"];
+  var longitude = airport_coordinates[airport_code]["long"];
+  var API_KEY = "8aaa1191e7da730e86d8a96f5032d132"
+  console.log(latitude, longitude, API_KEY);
+  return {
+    [CALL_API]: {
+      types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
+      endpoint: `https://api.forecast.io/forecast/${API_KEY}/${latitude},${longitude},${unix_time}`,
       schema: Schemas.FLIGHT,
     }
   }

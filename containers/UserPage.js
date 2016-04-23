@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { loadUser, fetchMachine } from '../actions'
+import { loadUser, fetchMachine, fetchWeather } from '../actions'
 import User from '../components/User'
 import Repo from '../components/Repo'
 import List from '../components/List'
@@ -10,6 +10,7 @@ function loadData(props) {
   const { flight } = props
   props.loadUser(flight, [ 'name' ])
   props.fetchMachine()
+  props.fetchWeather("JLN", "1461408389")
 }
 
 class UserPage extends Component {
@@ -55,6 +56,7 @@ UserPage.propTypes = {
   flight: PropTypes.string.isRequired,
   flight_details: PropTypes.object,
   loadUser: PropTypes.func.isRequired,
+  fetchWeather: PropTypes.func.isRequired,
 }
 
 function mapStateToProps(state, ownProps) {
@@ -74,4 +76,5 @@ function mapStateToProps(state, ownProps) {
 export default connect(mapStateToProps, {
   loadUser,
   fetchMachine
+  fetchWeather,
 })(UserPage)
