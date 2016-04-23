@@ -22,7 +22,7 @@ class UserPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.login !== this.props.login) {
+    if (nextProps.flight !== this.props.flight) {
       loadData(nextProps)
     }
   }
