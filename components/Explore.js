@@ -52,7 +52,7 @@ export default class Explore extends Component {
         <p>When are you flying?</p>
         <DateTime className={`${styles['datepicker']}`} isValidDate={this.isValidDate}
           onChange={this.handleDateChange}
-          timeFormat={false} defaultValue={this.props.value.date}
+          timeFormat={false} defaultValue={this.props.value.date || moment()}
           closeOnSelect={true} />
       </div>
     )

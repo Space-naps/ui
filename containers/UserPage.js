@@ -15,7 +15,7 @@ function loadData(props) {
   let month = null
   let day = null
   if (date) {
-    date = moment(date)
+    date = moment(date, 'DDD')
     year = date.year()
     month = date.month() + 1
     day = date.date()
@@ -23,7 +23,7 @@ function loadData(props) {
   }
 
   props.loadUser(flight, year, month, day)
-  if (flight_details) {
+  if (flight_details && date) {
     props.loadWeather(flight_details.departureAirportFsCode, flight_details.departureDate.dateLocal)
     props.loadWeather(flight_details.arrivalAirportFsCode, flight_details.arrivalDate.dateLocal)
     if (weather && destWeather) {
@@ -51,8 +51,8 @@ class UserPage extends Component {
       (nextProps.flight_details && !this.props.flight_details) ||
       (nextProps.weather && !this.props.weather) ||
       (nextProps.destWeather && !this.props.destWeather) ||
-      (nextProps.date.format('x') !== this.props.date.format('x'))) {
-      console.log("Loading")
+      (nextProps.date != this.props.date)) {
+      console.log("Loading", nextProps.date, this.props.date)
       loadData(nextProps)
     }
   }
@@ -66,8 +66,8 @@ class UserPage extends Component {
   }
 
   render() {
-    const { flight_details, flight, weather, prediction } = this.props
-    if (!flight_details) {
+    const { flight_details, flight, weather, prediction, date } = this.props
+    if (flight && date && !flight_details || !weather || !prediction) {
       return <h1><i>Loading {flight}’s details...</i></h1>
     }
 
@@ -102,12 +102,12 @@ function mapStateToProps(state, ownProps) {
   let arrWeather = null;
 
   if (!date) {
-    date = moment()
+    date = moment().format('DDD')
   } else {
-    date = moment(`${date}`, 'x')
+    date = moment(`${date}`, 'x').format('DDD')
   }
 
-  let flight_key = `${flight}/${date.format('DDD')}`
+  let flight_key = `${flight}/${date}`
   console.log("mapping flight key", flight_key)
   if (flights[flight_key]) {
     depCode = flights[flight_key].departureAirportFsCode
