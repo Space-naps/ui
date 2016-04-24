@@ -25,7 +25,7 @@ export default class User extends Component {
       <div className={classnames(styles.user, appStyles['result'], appStyles['align-center'])}>
         <div className={styles.results}>
           {this.props.weather && <WeatherIcon icon={this.props.weather.currently.icon}/>}
-          <p className={styles.text}>The likelyhood of your flight being delayed:</p>
+          <p className={styles.text}>The likelyhood of your flight being delayed</p>
           <p className={styles.probability}>{this.percentage()}</p>
         </div>
         {this.props.weather && <WeatherText weather={this.props.weather.currently.icon} />}

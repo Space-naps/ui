@@ -27,11 +27,18 @@
 .subtext {
   clear:both;
   color: #CD6D01;
-  font-size: 40px;
+  font-size: 30px;
   padding: 0;
   margin: 0;
-  text-align: center;
-  text-transform: uppercase;
+  text-align: center;;
+}
+
+.subtext:before {
+  content: '“ '; 
+}
+
+.subtext:after {
+  content: ' ”';
 }
 
 .results {
