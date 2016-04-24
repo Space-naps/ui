@@ -29,7 +29,6 @@ let icons = {
 export default class WeatherIcon extends Component {
   render() {
     let type = changeCase.pascalCase(this.props.icon);
-    console.log(icons, type, icons[type])
     return <img src={icons[type]}/>
   }
 }

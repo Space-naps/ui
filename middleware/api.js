@@ -1,14 +1,8 @@
 import { Schema, arrayOf, unionOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
 import 'isomorphic-fetch'
-import airport_coordinates from '../actions/airport_coordinates.json'
 import airport_codes from '../actions/airport_codes.json'
-
-let coords_to_airport = {}
-for(let airport of Object.keys(airport_coordinates)) {
-  let details = airport_coordinates[airport]
-  coords_to_airport[`${details.lat},${details.long}`] = airport
-}
+import moment from 'moment'
 
 let codes_to_airport = {}
 for (let airport of Object.keys(airport_codes)) {
@@ -36,7 +30,6 @@ function getNextPageUrl(response) {
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
 function callApi(fullUrl, schema, method='GET', body=null, headers={}) {
-  console.log(method, body, headers);
   let options = {method, headers}
   if (body) {
     options.body = JSON.stringify(body)
@@ -69,7 +62,11 @@ function callApi(fullUrl, schema, method='GET', body=null, headers={}) {
 
 
 function generateFlightCode(entity) {
-  return entity['carrierFsCode'] + entity['flightNumber']
+  let date = moment(entity.departureDate.dateLocal)
+
+  let retval = `${entity['carrierFsCode']}${entity['flightNumber']}/${date.format('DDD')}`
+  console.log("Incoming key?", retval)
+  return retval
 }
 const flightCode = new Schema('flights', {idAttribute: generateFlightCode})
 const airportSchema = new Schema('airports', {idAttribute: 'iata'})
@@ -80,14 +77,15 @@ flightDetails.define({
 });
 
 function generateWeatherCode(entity) {
-  let key = `${entity.latitude},${entity.longitude}`
-  return coords_to_airport[key]
+  let key = `${entity.longitude},${entity.latitude}`
+  return key
 }
 const weather = new Schema('weathers', {idAttribute: generateWeatherCode})
 
 function generateMachineId(entity) {
-  console.log("Generating machine ids")
-  return `${codes_to_airport[entity.results.output1.value.values[0][3]]}-${entity.results.output1.value.values[0][2]}`
+  // console.log("Generating machine ids")
+  // return `${codes_to_airport[entity.results.output1.value.values[0][3]]}-${codes_to_airport[entity.results.output1.value.values[0][4]]}-${entity.results.output1.value.values[0][2]}`
+  return 0
 }
 
 const machine = new Schema('machines', {idAttribute: generateMachineId})

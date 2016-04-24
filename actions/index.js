@@ -1,6 +1,5 @@
 import { CALL_API, Schemas } from '../middleware/api'
 import moment from 'moment'
-import airport_coordinates from './airport_coordinates.json'
 import airport_codes from './airport_codes.json'
 
 export const USER_REQUEST = 'USER_REQUEST'
@@ -41,16 +40,15 @@ export const WEATHER_FAILURE = 'WEATHER_FAILURE'
 
 // Fetches a weather forecast for a day using the forecast.io API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchWeather(airport_code, unix_time) {
-  var latitude = airport_coordinates[airport_code]["lat"];
-  var longitude = airport_coordinates[airport_code]["long"];
+function fetchWeather(airport_data, unix_time) {
+  var latitude = airport_data.latitude;
+  var longitude = airport_data.longitude;
   var API_KEY = "8aaa1191e7da730e86d8a96f5032d132"
   return {
     [CALL_API]: {
       types: [ WEATHER_REQUEST, WEATHER_SUCCESS, WEATHER_FAILURE ],
       endpoint: `${CORS_ANYWHERE}https://api.forecast.io/forecast/${API_KEY}/${latitude},${longitude},${unix_time}`,
       schema: Schemas.WEATHER,
-      key: airport_code
     }
   }
 }
@@ -58,18 +56,22 @@ function fetchWeather(airport_code, unix_time) {
 export function loadWeather(airport_code, time) {
   let unix_time = moment(time).unix()
   return (dispatch, getState) => {
-    const weather = getState().entities.weathers[airport_code]
+    const airport_data = getState().entities.airports[airport_code]
+    const long = airport_data.longitude;
+    const lat = airport_data.latitude;
+    const weather = getState().entities.weathers[`${long},${lat}`]
     if (weather) return null
-
-    return dispatch(fetchWeather(airport_code, unix_time))
+    
+    
+    return dispatch(fetchWeather(airport_data, unix_time))
   }
 }
 
 // Fetches a single user from Github API unless it is cached.
 // Relies on Redux Thunk middleware.
-export function loadUser(flight, requiredFields = []) {
+export function loadUser(flight, year, month, day = []) {
   return (dispatch, getState) => {
-    const flight_details = getState().entities.flights[flight]
+    const flight_details = getState().entities.flights[`${flight}/${year}/${month}/${day}`]
     if (flight_details) {
       return null
     }
@@ -78,7 +80,7 @@ export function loadUser(flight, requiredFields = []) {
     let result = flight.match(regex);
     if(result) {
       let [dummy, airline, flight_num] = result;
-      return dispatch(fetchUser(airline, flight_num))
+      return dispatch(fetchUser(airline, flight_num,  year, month, day))
     }
   }
 }
@@ -87,8 +89,9 @@ export function loadUser(flight, requiredFields = []) {
 export const MACHINE_REQUEST = 'MACHINE_REQUEST'
 export const MACHINE_SUCCESS = 'MACHINE_SUCCESS'
 export const MACHINE_FAILURE = 'MACHINE_FAILURE'
+export const CLEAR_MACHINE = 'CLEAR_MACHINE'
 
-export function fetchMachine(time, flight_stats, weather) {
+export function fetchMachine(time, arr_time, flight_stats, weather, destWeather) {
 
   time = moment(time);
 
@@ -103,30 +106,34 @@ export function fetchMachine(time, flight_stats, weather) {
   if (arr_port in airport_codes) {
     arrive_code = airport_codes[arr_port]
   }
+
+  let depart_time = moment(flight_stats.departureDate.dateLocal).format('Hmm')
+  let arrive_time = moment(flight_stats.arrivalDate.dateLocal).format('Hmm')
+  let mph_knots = 0.868976;
   let data = {
         "DayofMonth": time.date(),
         "DayOfWeek": time.day(),
         "Carrier": flight_stats.carrierFsCode,
-        "OriginAirportID": depart_code,
-        "DestAirportID": arrive_code,
-        "CRSDepTime": flight_stats.departureDate.dateLocal,
-        "CRSArrTime": flight_stats.arrivalDate.dateLocal,
+        // "OriginAirportID": depart_code,
+        // "DestAirportID": arrive_code,
+        "CRSDepTime": depart_time,
+        "CRSArrTime": arrive_time,
         "ArrDel15": '0',
     // Departure?
         "Timezone": '0',
-        "Visibility": weather.currently.visibility,
-        "DryBulbFarenheit": '0', // TODO temperature (normal)
+        "Visibility": weather.currently.visibility || "0",
+        "DryBulbFarenheit": weather.currently.temperature,
         "DewPointFarenheit": weather.currently.dewPoint,
-        "RelativeHumidity": weather.currently.humidity,
-        "WindSpeed": weather.currently.windSpeed,
+        "RelativeHumidity": weather.currently.humidity*100,
+        "WindSpeed": weather.currently.windSpeed * mph_knots,
         "Altimeter": '0',
     // Destination??
         "Timezone (2)": '0',
-        "Visibility (2)": '0',
-        "DryBulbFarenheit (2)": '0',
-        "DewPointFarenheit (2)": '0',
-        "RelativeHumidity (2)": '0',
-        "WindSpeed (2)": '0',
+        "Visibility (2)": destWeather.currently.visibility || "0",
+        "DryBulbFarenheit (2)": destWeather.currently.temperature,
+        "DewPointFarenheit (2)": destWeather.currently.dewPoint,
+        "RelativeHumidity (2)": destWeather.currently.humidity*100,
+        "WindSpeed (2)": destWeather.currently.windSpeed * mph_knots,
         "Altimeter (2)": '0'
   }
 
@@ -159,6 +166,12 @@ export function fetchMachine(time, flight_stats, weather) {
       'Content-Type': 'application/json',
       'Accept': 'application/json'}
     }
+  }
+}
+
+export function clearMachine() {
+  return {
+    type: CLEAR_MACHINE
   }
 }
 

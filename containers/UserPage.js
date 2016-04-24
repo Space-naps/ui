@@ -1,18 +1,33 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { loadUser, fetchMachine, loadWeather } from '../actions'
+import { loadUser, fetchMachine, loadWeather, clearMachine } from '../actions'
 import User from '../components/User'
 import Repo from '../components/Repo'
 import List from '../components/List'
 import zip from 'lodash/zip'
+import moment from 'moment'
 
 function loadData(props) {
-  const { flight, flight_details, weather } = props
-  props.loadUser(flight, [ 'name' ])
+  let { flight, flight_details, weather, destWeather, date } = props
+  props.clearMachine()
+
+  let year = null
+  let month = null
+  let day = null
+  if (date) {
+    date = moment(date)
+    year = date.year()
+    month = date.month() + 1
+    day = date.date()
+
+  }
+
+  props.loadUser(flight, year, month, day)
   if (flight_details) {
-    props.loadWeather(flight_details.departureAirportFsCode, flight_details.operationalTimes.publishedDeparture.dateLocal)
-    if (weather) {
-      props.fetchMachine(flight_details.operationalTimes.publishedDeparture.dateLocal, flight_details, weather)
+    props.loadWeather(flight_details.departureAirportFsCode, flight_details.departureDate.dateLocal)
+    props.loadWeather(flight_details.arrivalAirportFsCode, flight_details.arrivalDate.dateLocal)
+    if (weather && destWeather) {
+      props.fetchMachine(flight_details.departureDate.dateLocal, flight_details.arrivalDate.dateLocal, flight_details, weather, destWeather)
     }
   }
 
@@ -31,9 +46,13 @@ class UserPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.flight !== this.props.flight || 
+    console.log("Should we load?", nextProps.flight, this.props.flight)
+    if (nextProps.flight !== this.props.flight ||
       (nextProps.flight_details && !this.props.flight_details) ||
-      (nextProps.weather && !this.props.weather)) {
+      (nextProps.weather && !this.props.weather) ||
+      (nextProps.destWeather && !this.props.destWeather) ||
+      (nextProps.date !== nextProps.date)) {
+      console.log("Loading")
       loadData(nextProps)
     }
   }
@@ -68,32 +87,58 @@ UserPage.propTypes = {
 }
 
 function mapStateToProps(state, ownProps) {
-  let { login } = ownProps.params
+  let { login, date } = ownProps.params
   const {
-    entities: { flights, weathers, machines }
+    entities: { flights, weathers, machines, airports }
   } = state
 
   // Haccckkkkk
   let flight = login.toUpperCase()
-  let weather = null
+  let depCode = null
+  let arrCode = null
   let prediction = null
-  if (flights[flight]) {
-    weather = flights[flight].departureAirportFsCode
-    if (weather && machines) {
-      let key = `${flights[flight].departureAirportFsCode}-${flights[flight].carrierFsCode}`
-      if (key in machines) {
-        let machine = machines[key]
+
+  let depWeather = null;
+  let arrWeather = null;
+
+  if (!date) {
+    date = moment()
+  } else {
+    date = moment(`${date}`, 'x')
+  }
+
+  let flight_key = `${flight}/${date.format('DDD')}`
+  console.log("mapping flight key", flight_key)
+  if (flights[flight_key]) {
+    depCode = flights[flight_key].departureAirportFsCode
+    arrCode = flights[flight_key].arrivalAirportFsCode
+
+    let depLong = airports[depCode].longitude;
+    let depLat = airports[depCode].latitude;
+
+    let arrLong = airports[depCode].longitude
+    let arrLat = airports[depCode].latitude
+
+    depWeather = weathers[`${depLong},${depLat}`];
+    arrWeather = weathers[`${arrLong},${arrLat}`]
+
+    if (depCode && arrCode && machines) {
+      let machine = machines[0]
+      if (machine) {
         prediction = {
-          'likely': machine.results.output1.value.values[0][22],
-          'probability': machine.results.output1.value.values[0][23]
+          'likely': machine.results.output1.value.values[0][20],
+          'probability': machine.results.output1.value.values[0][21]
         }
       }
+
     }
   }
   return {
     flight,
-    flight_details: flights[flight],
-    weather: weathers[weather],
+    date,
+    flight_details: flights[flight_key],
+    weather: depWeather,
+    destWeather: arrWeather,
     prediction: prediction
   }
 }
@@ -101,5 +146,6 @@ function mapStateToProps(state, ownProps) {
 export default connect(mapStateToProps, {
   loadUser,
   fetchMachine,
-  loadWeather
+  loadWeather,
+  clearMachine
 })(UserPage)

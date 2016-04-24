@@ -4,12 +4,17 @@ import { routerReducer as routing } from 'react-router-redux'
 import { combineReducers } from 'redux'
 
 // Updates an entity cache in response to any action with response.entities.
-function entities(state = { flights: {}, repos: {}, weathers: {} }, action) {
+function entities(state = { flights: {}, repos: {}, weathers: {}, machines: {} }, action) {
+  let newState = state
   if (action.response && action.response.entities) {
-    return merge({}, state, action.response.entities)
+    newState = merge({}, state, action.response.entities)
   }
 
-  return state
+  if (action.type == ActionTypes.CLEAR_MACHINE) {
+    newState = {...newState, machines: {}}
+  }
+
+  return newState
 }
 
 // Updates error message to notify about the failed fetches.
