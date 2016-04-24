@@ -152,6 +152,9 @@ function mapStateToProps(state, ownProps) {
           'likely': machine.results.output1.value.values[0][20],
           'probability': machine.results.output1.value.values[0][21]
         }
+        if (prediction.likely == 0) {
+          prediction.probability = 1 - prediction.probability
+        }
       }
 
     }
