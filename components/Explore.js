@@ -3,6 +3,7 @@ import _ from 'lodash'
 import DateTime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
 import styles from './Explore.scss'
+import moment from 'moment'
 
 const GITHUB_REPO = 'https://github.com/reactjs/redux'
 
@@ -32,6 +33,12 @@ export default class Explore extends Component {
 
   handleChange = _.debounce(this.props.onChange, 300)
 
+
+  isValidDate(currentDate, selectedDate) {
+    let three_days = moment().add(2, 'day')
+    return currentDate.isBefore(three_days)
+  }
+
   render() {
     return (
       <div className={styles.form}>
@@ -43,8 +50,8 @@ export default class Explore extends Component {
                defaultValue={this.props.value.flight}
                onKeyUp={this.handleKeyUp} />
         <p>When are you flying?</p>
-        <DateTime className={`${styles['datepicker']}`}
-          onChange={this.handleDateChange} 
+        <DateTime className={`${styles['datepicker']}`} isValidDate={this.isValidDate}
+          onChange={this.handleDateChange}
           timeFormat={false} defaultValue={this.props.value.date}
           closeOnSelect={true} />
       </div>

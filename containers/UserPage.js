@@ -51,7 +51,7 @@ class UserPage extends Component {
       (nextProps.flight_details && !this.props.flight_details) ||
       (nextProps.weather && !this.props.weather) ||
       (nextProps.destWeather && !this.props.destWeather) ||
-      (nextProps.date !== nextProps.date)) {
+      (nextProps.date.format('x') !== this.props.date.format('x'))) {
       console.log("Loading")
       loadData(nextProps)
     }
