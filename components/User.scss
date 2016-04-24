@@ -7,10 +7,12 @@
   height: 0;
   padding: 0;
   letter-spacing: -10px;
+  color: #FF0C24;
 }
+
 .text {
   font-size: 40px;
-  width: 80%;
+  width: 400px;
   display: inline-block;
   text-transform: uppercase;
   margin: 0;
@@ -32,4 +34,10 @@
 
 .results {
   text-align: center;
+}
+
+@media (max-width: 700px) {
+  .text {
+    width: auto;
+  }
 }
