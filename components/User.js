@@ -4,6 +4,7 @@ import numeral from 'numeral'
 import classnames from 'classnames'
 import Spinner from './Spinner'
 import WeatherIcon from './WeatherIcon'
+import WeatherText from './WeatherText'
 
 import styles from './User.scss'
 import appStyles from '../containers/App.scss'
@@ -27,8 +28,7 @@ export default class User extends Component {
           <p className={styles.text}>The likelyhood of your flight being delayed:</p>
           <p className={styles.probability}>{this.percentage()}</p>
         </div>
-        <p className={styles.subtext}>Don't go out without an umbrella!</p>
-
+        {this.props.weather && <WeatherText weather={this.props.weather.currently.icon} />}
       </div>
     )
     //        {departureAirportFsCode} to        {arrivalAirportFsCode}<br/>
