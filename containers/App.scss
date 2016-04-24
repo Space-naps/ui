@@ -20,13 +20,15 @@
 
 .app {
   font-family: 'Open Sans', sans-serif;
+  position: relative;
+  background-image: url('../img/FlytoBackground.png');
+  background-position: center;
+
 }
 
 .splash {
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('../img/FlytoBackground.png');
-  background-position: center;
   -webkit-box-flex: 1;
   -webkit-flex: 1 1 auto;
     -ms-flex: 1 1 auto;

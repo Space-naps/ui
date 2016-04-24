@@ -1,0 +1,13 @@
+.spinner {
+  position: relative;
+  z-index:0;
+  text-align: center;
+  left: -50%;
+}
+
+.wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+
+}

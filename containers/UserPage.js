@@ -6,6 +6,9 @@ import Repo from '../components/Repo'
 import List from '../components/List'
 import zip from 'lodash/zip'
 import moment from 'moment'
+import Spinner from '../components/Spinner'
+
+import styles from './UserPage.scss'
 
 function loadData(props) {
   let { flight, flight_details, weather, destWeather, date } = props
@@ -65,15 +68,35 @@ class UserPage extends Component {
     )
   }
 
-  render() {
-    const { flight_details, flight, weather, prediction, date } = this.props
+  classes() {
+    const {flight_details, flight, weather, prediction, date} = this.props
     if (flight && date && !flight_details || !weather || !prediction) {
-      return <h1><i>Loading {flight}’s details...</i></h1>
+
+      return {
+        spinner: styles.spinnerShow,
+        details: styles.detailsHidden
+      }
+    } else {
+      return {
+        spinner: styles.spinnerHidden,
+        details: styles.detailsShow
+      }
     }
+  }
+
+  render() {
+        const {flight_details, flight, weather, prediction, date} = this.props
+
+
+    let hideUser = flight && date && !flight_details || !weather || !prediction;
 
     return (
       <div>
-        <User user={flight_details} weather={weather} prediction={prediction} />
+        <div className={this.classes().spinner}><Spinner /></div>
+
+        <div className={this.classes().details}>
+          {!hideUser && <User user={flight_details} weather={weather} prediction={prediction}/>}
+        </div>
       </div>
     )
   }
