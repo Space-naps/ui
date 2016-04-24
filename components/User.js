@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import numeral from 'numeral'
+import classnames from 'classnames'
 import Spinner from './Spinner'
 import WeatherIcon from './WeatherIcon'
 
 import styles from './User.scss'
+import appStyles from '../containers/App.scss'
 
 export default class User extends Component {
   percentage() {
@@ -19,7 +21,7 @@ export default class User extends Component {
     const { departureAirportFsCode, arrivalAirportFsCode, name } = this.props.user
 
     return (
-      <div className={styles.user}>
+      <div className={classnames(styles.user, appStyles['result'], appStyles['align-center'])}>
         <div className={styles.results}>
           {this.props.weather && <WeatherIcon icon={this.props.weather.currently.icon}/>}
           <p className={styles.text}>The likelyhood of your flight being delayed:</p>

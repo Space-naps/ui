@@ -35,14 +35,18 @@ export default class Explore extends Component {
   render() {
     return (
       <div className={styles.form}>
-        <p>What's your flight number?</p>
-        <input className={styles['form-control']} size="10" placeholder='Flight no.'
+        <label htmlFor='flight-no'>
+          <p>What's your flight number?</p>
+        </label>
+        <input className={styles['form-control']} id='flight-no' 
+               placeholder='Flight no.'
                defaultValue={this.props.value.flight}
                onKeyUp={this.handleKeyUp} />
         <p>When are you flying?</p>
         <DateTime className={`${styles['datepicker']}`}
           onChange={this.handleDateChange} 
-          timeFormat={false} defaultValue={this.props.value.date} />
+          timeFormat={false} defaultValue={this.props.value.date}
+          closeOnSelect={true} />
       </div>
     )
   }

@@ -1,11 +1,10 @@
-.app {
-  font-family: 'Open Sans', sans-serif;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  min-height: 100vh;
+.fill-screen {
+  height: 100vh;
   margin: 0px;
   box-sizing: border-box;
+}
+
+.align-center {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -13,13 +12,34 @@
   -webkit-flex-flow: column;
       -ms-flex-flow: column;
           flex-flow: column;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   text-align: center;
-  background-image: url('../img/Elegant_Background-7.jpg');
+}
 
+.app {
+  font-family: 'Open Sans', sans-serif;
 }
 
 .splash {
-    background-image: url('../img/FlytoBackground.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url('../img/FlytoBackground.png');
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+}
+
+.result {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url('../img/Elegant_Background-7.jpg');
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
 }
 
 a {
@@ -36,3 +56,9 @@ input {
   color: #000;
 }
 
+@media (max-width: 700px) {
+  .fill-screen {
+    overflow-y: auto;
+    height: 200vh;
+  }
+}

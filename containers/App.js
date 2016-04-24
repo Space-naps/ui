@@ -5,6 +5,7 @@ import Logo from '../components/Logo';
 import Explore from '../components/Explore'
 import { resetErrorMessage } from '../actions'
 import moment from 'moment'
+import classnames from 'classnames';
 import styles from './App.scss';
 
 class App extends Component {
@@ -52,8 +53,8 @@ class App extends Component {
     const { children, inputValue } = this.props;
 
     return (
-      <div className={styles.app}>
-        <div className={styles.splash}>
+      <div className={classnames(styles.app, styles['fill-screen'], styles['align-center'])}>
+        <div className={classnames(styles.splash, styles['align-center'])}>
           <Logo />
           <Explore style={{ color: '#000'}} value={inputValue}
                   onChange={this.handleChange} />
